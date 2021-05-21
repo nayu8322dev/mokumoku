@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-stop: always;
+            /* webview75〜 */
+        }
+
+        .carousel>.carousel__item {
+            scroll-snap-align: start;
+            width: 100%;
+            flex: none;
+            padding: 5px 10px;
+            background-color: #EEE;
+        }
+    </style>
+    <script>
+        'use strict';
+        class Carousel {
+            // 初期化
+            constructor(query) {
+                this.query = query;
+                // 要素の初期化
+                this.refleshElement();
+                // ボタンのセットアップ
+                this.btnPrev = document.querySelector('.carousel__prev');
+                this.btnNext = document.querySelector('.carousel__next');
+                this.btnPrev.onclick = () => { this.prev(); };
+                this.btnNext.onclick = () => { this.next(); };
+                // 表示中の物を削除するボタン
+                this.btnRemove = document.querySelector('.carousel__remove');
+                this.btnRemove.onclick = () => { this.remove(); };
+
+                this.buttonRendere(0);
+            }
+            get index() {
+                return Math.round(this.$elm.scrollLeft / this.$elm.clientWidth);
+            }
+            get currentItem() {
+                return this.$elm.children[this.index];
+            }
+            refleshElement() {
+                this.$elm = document.querySelector(this.query);
+                this.length = Math.round(this.$elm.scrollWidth / this.$elm.clientWidth);
+                console.log(this.length);
+            }
+            buttonRendere(index) {
+                if (index <= 0) {
+                    this.btnPrev.setAttribute('disabled', 'disabled');
+                } else {
+                    this.btnPrev.removeAttribute('disabled');
+                }
+                if (index >= this.length -1) {
+                    this.btnNext.setAttribute('disabled', 'disabled');
+                } else {
+                    this.btnNext.removeAttribute('disabled');
+                }
+            }
+
+            // 指定した場所に移動
+            goto(index) {
+                if (index >= this.length || index < 0) {
+                    return;
+                }
+                console.log(`index:${index}, length:${this.length}`);
+
+                this.$elm.children[index].scrollIntoView({ behavior: "smooth" });
+                this.buttonRendere(index);
+            }
+
+            next() {
+                this.goto(this.index + 1);
+            }
+
+            prev() {
+                this.goto(this.index - 1);
+            }
+
+            remove() {
+                this.$elm.children[this.index].remove();
+                this.refleshElement();
+                console.log(`remove:${this.index}`);
+            }
+
+            add($addElm) {
+                this.$elm.append($addElm);
+                this.refleshElement();
+                console.log(`add:${this.index}`);
+                this.goto(this.length - 1);
+            }
+        }
+
+        window.onload = function () {
+            // カルーセルを生成
+            const carousel = new Carousel('.carousel');
+
+            // 要素の追加
+            const btnAdd = document.querySelector('.carousel__add');
+            btnAdd.onclick = () => { carousel.add(document.querySelector('.carousel__item:first-child').cloneNode(true)); };
+        };
+    </script>
+</head>
+
+<body>
+    <div class="carousel">
+        <div class="carousel__item">
+            <p>item1</p>
+            <ui>
+                <li>aaaaaaaa</li>
+                <li>b</li>
+                <li>c</li>
+                <li>d</li>
+                <li>e</li>
+            </ui>
+        </div>
+        <div class="carousel__item">
+            <p>item2</p>
+                <ui>
+                    <li>a</li>
+                    <li>b</li>
+                    <li>c</li>
+                    <li>d</li>
+                    <li>e</li>
+                </ui>
+        </div>
+
+        <div class="carousel__item">
+            <p>item3</p>
+            <ui>
+                <li>a</li>
+                <li>b</li>
+                <li>c</li>
+                <li>d</li>
+                <li>e</li>
+            </ui>
+        </div>
+
+        <div class="carousel__item">
+            <p>item4</p>
+            <ui>
+                <li>a</li>
+                <li>b</li>
+                <li>c</li>
+                <li>d</li>
+                <li>e</li>
+            </ui>
+        </div>
+
+        <div class="carousel__item">
+            <p>item5</p>
+            <ui>
+                <li>a</li>
+                <li>b</li>
+                <li>c</li>
+                <li>d</li>
+                <li>e</li>
+            </ui>
+        </div>
+    </div>
+    <hr>
+    <div>
+        <button type="button" class="carousel__prev">Prev</button>
+        <button type="button" class="carousel__next">Next</button>
+<br>
+        <button type="button" class="carousel__remove">Remove</button>
+        <button type="button" class="carousel__add">Add</button>
+    </div>
+</body>
+
+</html>
