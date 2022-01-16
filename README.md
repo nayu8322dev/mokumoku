@@ -4,3 +4,5 @@ This repository is used for personal learning.
 https://nayu8322dev.github.io/mokumoku/scroll-snap.html
 ## JS:draggable
 https://nayu8322dev.github.io/mokumoku/draggable.html
+## JS:shrink-text
+https://nayu8322dev.github.io/mokumoku/shrink-text.html
